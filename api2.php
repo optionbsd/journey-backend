@@ -45,6 +45,11 @@ function verifyJWT($jwt, $secret) {
 
 // подключаемся к базе данных sqlite3
 $db = new SQLite3('database.db');
+// защита от sql инъекций
+$userId = $_GET['id'];
+$stmt = $db->prepare("SELECT * FROM users WHERE id = :id");
+$stmt->bindValue(':id', $userId, SQLITE3_INTEGER);
+$result = $stmt->execute();
 
 // создаем таблицы если их нет - изначально бд пустые
 $db->exec("CREATE TABLE IF NOT EXISTS users (
